@@ -1,5 +1,6 @@
 package com.example.wallpaperapp.data.api
 
+import android.annotation.SuppressLint
 import com.example.wallpaperapp.Utils.Resource
 import com.example.wallpaperapp.domain.entity.WallpaperLink
 import com.example.wallpaperapp.domain.repository.WallpaperRepository
@@ -9,24 +10,29 @@ import javax.inject.Inject
 
 /*dependency injection
  */
-class WallpaperRepositoryImpl @Inject constructor(val picSumApi: PicSumApi): WallpaperRepository {
+class WallpaperRepositoryImpl @Inject constructor(
+    private val picSumApi: PicSumApi,
+    private val cache: WallpaperCache): WallpaperRepository {
 
+    @SuppressLint("SuspiciousIndentation")
     override suspend fun getImages(): Flow<Resource<List<WallpaperLink>>> = flow {
-
-       try{
-           val response = picSumApi.getWallpaperImages()
-
-           //converting the big response into smaller object
-           response?.let{
-               val wallpaperLinks: List<WallpaperLink> = response.map {
-                   WallpaperLink(it.downloadUrl)
-               }
-               emit(Resource.Success(wallpaperLinks))
+           val cachedLinks = cache.getWallpaperLinks()
+           if (cachedLinks != null) {
+                emit(Resource.Success(cachedLinks))
+           } else {
+              try {
+                val response = picSumApi.getWallpaperImages()
+                //converting the big response into smaller object
+                response?.let {
+                    val wallpaperLinks: List<WallpaperLink> = response.map {
+                        WallpaperLink(it.downloadUrl)
+                    }
+                    cache.saveWallpaperLinks(wallpaperLinks)
+                    emit(Resource.Success(wallpaperLinks))
+                }
+              } catch (e: Exception) {
+                emit(Resource.Error(null, e.message ?: "Error fetching response!"))
+              }
            }
-       }catch (e: Exception){
-           emit(Resource.Error(null, e.message?:"Error fetching response!"))
-       }
-
-    }
-
+        }
 }

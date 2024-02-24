@@ -83,9 +83,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun populateDataInRecyclerView(list: List<WallpaperLink>) {
-        val wallpaperAdapter = ImagesRecyclerViewAdapter(list)
+        val wallpaperAdapter = ImagesRecyclerViewAdapter(list,this@MainActivity, wallpaperViewModel)
         binding.imagesRecyclerView.adapter = wallpaperAdapter
     }
+
+
 
 
 }

@@ -48,6 +48,7 @@ android {
 
 dependencies {
     implementation("com.google.dagger:hilt-android:2.48")
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
     kapt("com.google.dagger:hilt-android-compiler:2.48")
 
     implementation("androidx.core:core-ktx:1.12.0")
@@ -77,7 +78,7 @@ dependencies {
     implementation ("androidx.activity:activity-ktx:1.4.0")
 
     //Glide
-    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.github.bumptech.glide:glide:4.14.2")
 
     //DaggerHilt
     implementation("com.google.dagger:hilt-android:2.48")

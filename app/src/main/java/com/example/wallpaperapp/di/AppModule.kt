@@ -1,8 +1,12 @@
 package com.example.wallpaperapp.di
 
+import android.app.Application
+import android.content.Context
 import androidx.core.app.ActivityCompat
 import com.example.wallpaperapp.Utils.Constants.BASE_URL
 import com.example.wallpaperapp.data.api.PicSumApi
+import com.example.wallpaperapp.data.api.SharedPreferenceWallpaperCache
+import com.example.wallpaperapp.data.api.WallpaperCache
 import com.example.wallpaperapp.data.api.WallpaperRepositoryImpl
 import com.example.wallpaperapp.domain.repository.WallpaperRepository
 import dagger.Binds
@@ -29,11 +33,21 @@ interface AppModule {
                 .build()
                 .create(PicSumApi::class.java)
         }
+
+        @Provides
+        @Singleton
+        fun provideContext(application: Application): Context {
+            return application.applicationContext // Use application context for better practices
+        }
     }
 
     @Binds
     @Singleton
     fun provideWallpaperRepository(repositoryImpl: WallpaperRepositoryImpl): WallpaperRepository
+
+    @Binds
+    @Singleton
+    fun provideWallpaperCache(cache: SharedPreferenceWallpaperCache): WallpaperCache
 
 
 }
